@@ -9,7 +9,7 @@ const APTOS_NETWORK: Network = NetworkToNetworkName[ Network.DEVNET];
 const config = new AptosConfig({ network: APTOS_NETWORK });
 const aptos = new Aptos(config);
 
-async function main(coinName: string, coinTicker: string, underScoreCoin: string, coinWithSpace: string) {
+async function main(coinName: string, coinTicker: string, underScoreCoin: string) {
   const privateKey = new Ed25519PrivateKey("0x95c1daacfdb4cef3fd0fa88a858fe73d211bbc302059a078751b4998c7599f95");
   const alice = Account.fromPrivateKey({ privateKey  });
 
@@ -18,7 +18,7 @@ async function main(coinName: string, coinTicker: string, underScoreCoin: string
   console.log("\n=== Compiling MoonCoin package locally ===");
   compilePackage("move/moonCoin", "move/moonCoin/moonCoin.json", [{ name: "MoonCoin", address: alice.accountAddress }]);
 
-  const { metadataBytes, byteCode } = getPackageBytesToPublish("move/moonCoin/moonCoin.json", coinName, coinTicker, underScoreCoin, coinWithSpace);
+  const { metadataBytes, byteCode } = getPackageBytesToPublish("move/moonCoin/moonCoin.json", coinName, coinTicker, underScoreCoin);
   console.log(`\n=== Publishing MoonCoin package to ${aptos.config.network} network ===`);
   // Publish MoonCoin package to chain
   const transaction = await aptos.publishPackageTransaction({
@@ -37,4 +37,4 @@ async function main(coinName: string, coinTicker: string, underScoreCoin: string
 
 }
 
-main('JianCoin', 'JIAN', 'jian_coin', 'Jian Coin');
+main('Meme', 'MEME', 'meme');

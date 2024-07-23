@@ -36,7 +36,7 @@ export function compilePackage(
  * @param outputFile
  * @param namedAddresses
  */
-export function getPackageBytesToPublish(filePath: string, coinName: string, coinTicker :string, underScoreCoin: string, coinWithSpace: string ) {
+export function getPackageBytesToPublish(filePath: string, coinName: string, coinTicker :string, underScoreCoin: string) {
   // current working directory - the root folder of this repo
   const cwd = process.cwd();
   // target directory - current working directory + filePath (filePath json file is generated with the prevoius, compilePackage, cli command)
@@ -45,23 +45,19 @@ export function getPackageBytesToPublish(filePath: string, coinName: string, coi
   const coinNameHex = makeHex(coinName)
   const coinTickerHex = makeHex(coinTicker)
   const underScoreCoinHex = makeHex(underScoreCoin)
-  const coinWithSpaceHex = makeHex(coinWithSpace)
-  //maps to moon_coin
-  const moon_coinString = '6d6f6f6e5f636f696e'
-  //maps to MoonCoin
-  const moonCoinString = "4d6f6f6e436f696e"
+  //maps to moon
+  const moonString = '6d6f6f6e'
+  //maps to Moon
+  const moonCoinString = "4d6f6f6e"
   //maps to MOON
-  const moonString = "4d4f4f4e"
-  //maps to Moon Coin
-  const moonCoinWithSpace = "4d6f6f6e20436f696e"
+  const moonCapsString = "4d4f4f4e"
   let metadataBytes = jsonData.args[0].value;
   metadataBytes = metadataBytes.replace(moonCoinString, coinNameHex)
-  metadataBytes = metadataBytes.replace(moon_coinString, underScoreCoinHex)
+  metadataBytes = metadataBytes.replace(moonString, underScoreCoinHex)
   let byteString = jsonData.args[1].value[0];
-  byteString = byteString.replace(moon_coinString, underScoreCoinHex)
+  byteString = byteString.replace(moonString, underScoreCoinHex)
   byteString = byteString.replace(moonCoinString, coinNameHex)
-  byteString = byteString.replace(moonString, coinTickerHex)
-  byteString = byteString.replace(moonCoinWithSpace, coinWithSpaceHex)
+  byteString = byteString.replace(moonCapsString, coinTickerHex)
   jsonData.args[1].value[0] =  byteString
   const byteCode = jsonData.args[1].value;
   return { metadataBytes, byteCode };
