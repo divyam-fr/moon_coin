@@ -62,11 +62,8 @@ export function getPackageBytesToPublish(filePath: string, coinName: string, coi
   byteString = byteString.replace(moonCoinString, coinNameHex)
   byteString = byteString.replace(moonString, coinTickerHex)
   byteString = byteString.replace(moonCoinWithSpace, coinWithSpaceHex)
-  console.log(jsonData.args[1].value[0])
   jsonData.args[1].value[0] =  byteString
   const byteCode = jsonData.args[1].value;
-  console.log(byteCode[0])
-  console.log(metadataBytes)
   return { metadataBytes, byteCode };
 }
 
