@@ -6,6 +6,15 @@ import { AccountAddress } from "@aptos-labs/ts-sdk";
 /* eslint-disable no-console */
 /* eslint-disable max-len */
 
+
+const decimalHexMap: Record<number, string> = {
+  0 : 'A',
+  1 : 'B',
+  2 : 'C',
+  3 : 'D',
+  4 : 'E',
+  5 : 'F'
+}
 /**
  * A convenience function to compile a package locally with the CLI
  * @param packageDir
@@ -42,28 +51,45 @@ export function getPackageBytesToPublish(filePath: string, coinName: string, coi
   // target directory - current working directory + filePath (filePath json file is generated with the prevoius, compilePackage, cli command)
   const modulePath = path.join(cwd, filePath);
   const jsonData = JSON.parse(fs.readFileSync(modulePath, "utf8"));
-  const coinNameHex = makeHex(coinName)
+  const coinNameHex = makeHex(coinName + 'Coin')
   const coinTickerHex = makeHex(coinTicker)
-  const underScoreCoinHex = makeHex(underScoreCoin)
-  //maps to moon
-  const moonString = '6d6f6f6e'
-  //maps to Moon
-  const moonCoinString = "4d6f6f6e"
-  //maps to MOON
-  const moonCapsString = "4d4f4f4e"
+  const underScoreCoinHex = makeHex(underScoreCoin + '_coin')
+  const nameWithSpaceHex = makeHex(coinName + ' Coin')
+  //maps to MoonCoin with length 
+  const moonCoinHex = '084d6f6f6e436f696e'
+  //maps to moon_coin with length 
+  const moon_coinHex = '096d6f6f6e5f636f696e'
+  //maps to Moon Coin with length
+  const MoonCoinHex = '094d6f6f6e20436f696e'
+  //maps to MOON with length
+  const moonCapsHex = '044d4f4f4e'
   let metadataBytes = jsonData.args[0].value;
-  metadataBytes = metadataBytes.replace(moonCoinString, coinNameHex)
-  metadataBytes = metadataBytes.replace(moonString, underScoreCoinHex)
+//   console.log(metadataBytes)
+  metadataBytes = metadataBytes.replace(new RegExp(moonCoinHex, 'g'), coinNameHex)
+  metadataBytes = metadataBytes.replace(new RegExp(moon_coinHex, 'g'), underScoreCoinHex)
+//   console.log('part2', metadataBytes)
   let byteString = jsonData.args[1].value[0];
-  byteString = byteString.replace(moonString, underScoreCoinHex)
-  byteString = byteString.replace(moonCoinString, coinNameHex)
-  byteString = byteString.replace(moonCapsString, coinTickerHex)
+  console.log(byteString)
+  byteString = byteString.replace(new RegExp(moon_coinHex, 'g'), underScoreCoinHex)
+  byteString = byteString.replace(new RegExp(moonCoinHex, 'g'), coinNameHex)
+  byteString = byteString.replace(new RegExp(moonCapsHex,'g'), coinTickerHex)
+  byteString = byteString.replace(new RegExp(MoonCoinHex, 'g'), nameWithSpaceHex)
   jsonData.args[1].value[0] =  byteString
   const byteCode = jsonData.args[1].value;
   return { metadataBytes, byteCode };
 }
-
-function makeHex(string: string): string {
-    const buffer = Buffer.from(string, 'utf8')
-    return buffer.toString('hex')
+function makeHex(str: string) {
+    console.log(str)
+    let lengthHex
+    let stringLength = str.length;
+    let hexString = Buffer.from(str, 'utf8').toString('hex');
+    if (stringLength < 10) {
+        lengthHex = '0' + stringLength.toString();
+    } else {
+        let remainder = stringLength % 10;
+        lengthHex = '0' + decimalHexMap[remainder]
+    }
+    console.log(lengthHex + hexString)
+    return lengthHex + hexString;
 }
+
